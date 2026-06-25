@@ -18,5 +18,4 @@ tags: [llm, bots, spbdotnet]
 
 ## Материалы
 
-- Видео выше.
-- Слайды по ссылке.
+- [Слайды доклада](https://github.com/DotNetRu/AuditBlobs/blob/master/slides/LLM-Under-Hood-Go-Wrong.pdf)
