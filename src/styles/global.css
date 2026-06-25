@@ -104,18 +104,18 @@ footer {
 }
 
 .hero {
-  padding: 3rem 0 2rem;
+  padding: 2rem 0 2rem;
 }
 
 .hero-grid {
   display: grid;
   gap: 2rem;
-  align-items: center;
+  align-items: start;
 }
 
 .hero-image {
   width: 100%;
-  max-width: 280px;
+  max-width: 300px;
   height: auto;
   margin: 0 auto;
   filter: drop-shadow(0 0 24px rgba(245, 158, 11, 0.15));
@@ -127,8 +127,8 @@ footer {
   }
 
   .hero-image {
-    max-width: 300px;
-    margin: 0;
+    max-width: 340px;
+    margin: -0.5rem 0 0;
   }
 }
 

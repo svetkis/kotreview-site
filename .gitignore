@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# serena local overrides
+.serena/project.local.yml
+.serena/cache/
+.serena/memories/

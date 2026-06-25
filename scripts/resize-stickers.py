@@ -2,6 +2,7 @@ from PIL import Image
 import os
 
 stickers = {
+    "public/stickers/hero-friends.png": 512,
     "public/stickers/hero-ai.png": 512,
     "public/stickers/404.png": 512,
     "public/stickers/hello.png": 256,
