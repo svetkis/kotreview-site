@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'KotReview — Svetlana Meleshkina: .NET, AI engineering, agentic development' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="KotReview" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0f0f12" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <a class="logo" href="/">Kot<span>Review</span></a>
+        <nav>
+          <a href="/about">Обо мне</a>
+          <a href="/talks">Доклады</a>
+          <a href="/projects">Проекты</a>
+          <a href="/posts">Мысли</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <div class="container">
+        <p>© {new Date().getFullYear()} Svetlana Meleshkina · KotReview</p>
+        <p>
+          <a href="https://t.me/kot_review" target="_blank" rel="noopener">Telegram</a> ·
+          <a href="https://github.com/svetkis" target="_blank" rel="noopener">GitHub</a> ·
+          <a href="https://habr.com/ru/users/svetkis/articles/" target="_blank" rel="noopener">Habr</a> ·
+          <a href="https://www.linkedin.com/in/svetlana-meleshkina/" target="_blank" rel="noopener">LinkedIn</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

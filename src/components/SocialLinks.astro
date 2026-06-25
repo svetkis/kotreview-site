@@ -1,0 +1,15 @@
+---
+const links = [
+  { name: 'Telegram', url: 'https://t.me/kot_review' },
+  { name: 'Habr', url: 'https://habr.com/ru/users/svetkis/articles/' },
+  { name: 'GitHub', url: 'https://github.com/svetkis' },
+  { name: 'LinkedIn', url: 'https://www.linkedin.com/in/svetlana-meleshkina/' },
+  { name: 'Substack', url: 'https://substack.com/@lanaapps' },
+];
+---
+
+<div class="socials">
+  {links.map((link) => (
+    <a class="btn btn-outline" href={link.url} target="_blank" rel="noopener">{link.name}</a>
+  ))}
+</div>

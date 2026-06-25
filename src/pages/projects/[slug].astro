@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+const statusLabel = {
+  active: 'активен',
+  beta: 'beta',
+  done: 'завершён',
+}[project.data.status];
+---
+
+<Layout title={`${project.data.title} — KotReview`} description={project.data.description}>
+  <article class="container">
+    <h1>{project.data.title}</h1>
+    <div class="meta" style="margin-bottom: 1.5rem;">
+      <span>{statusLabel}</span>
+      {project.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+
+    <p>
+      <a class="btn" href={project.data.link} target="_blank" rel="noopener">Открыть проект →</a>
+    </p>
+
+    <Content />
+
+    <p style="margin-top: 2rem;"><a href="/projects">← Назад к проектам</a></p>
+  </article>
+</Layout>

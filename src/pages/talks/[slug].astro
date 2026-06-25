@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import YouTube from '../../components/YouTube.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const talks = await getCollection('talks');
+  return talks.map((talk) => ({
+    params: { slug: talk.id },
+    props: { talk },
+  }));
+}
+
+const { talk } = Astro.props;
+const { Content } = await render(talk);
+
+function youtubeId(url: string) {
+  const match = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
+  return match?.[1] ?? '';
+}
+---
+
+<Layout title={`${talk.data.title} — KotReview`} description={talk.data.description}>
+  <article class="container">
+    <h1>{talk.data.title}</h1>
+    <div class="meta" style="margin-bottom: 1.5rem;">
+      <time datetime={talk.data.date.toISOString()}>{talk.data.date.toLocaleDateString('ru-RU')}</time>
+      {talk.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+
+    <YouTube id={youtubeId(talk.data.youtube)} title={talk.data.title} />
+
+    {talk.data.slides && (
+      <p>
+        <a href={talk.data.slides} target="_blank" rel="noopener">Слайды →</a>
+      </p>
+    )}
+
+    <Content />
+
+    <p style="margin-top: 2rem;"><a href="/talks">← Назад к докладам</a></p>
+  </article>
+</Layout>

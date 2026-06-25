@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const talks = (await getCollection('talks'))
+  .filter((t) => !t.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Layout title="Доклады — KotReview" description="Доклады про AI Code Review, LLM под капотом продукта и разработку с агентами.">
+  <div class="container">
+    <section class="hero">
+      <h1>Доклады</h1>
+      <p>Выступления на конференциях и встречах сообществ.</p>
+    </section>
+
+    <div class="card-grid card-grid-2">
+      {talks.map((talk) => (
+        <Card
+          href={`/talks/${talk.id}/`}
+          title={talk.data.title}
+          description={talk.data.description}
+          date={talk.data.date}
+          tags={talk.data.tags}
+        />
+      ))}
+    </div>
+  </div>
+</Layout>

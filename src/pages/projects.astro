@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<Layout title="Проекты — KotReview" description="Пет-проекты, Telegram-боты и open-source инструменты.">
+  <div class="container">
+    <section class="hero">
+      <h1>Проекты</h1>
+      <p>Пет-проекты, Telegram-боты и open-source штуки, которыми пользуюсь сама.</p>
+    </section>
+
+    <div class="card-grid card-grid-2">
+      {projects.map((project) => (
+        <Card
+          href={`/projects/${project.id}/`}
+          title={project.data.title}
+          description={project.data.description}
+          tags={project.data.tags}
+          meta={project.data.status === 'beta' ? 'beta' : project.data.status === 'done' ? 'завершён' : 'активен'}
+        />
+      ))}
+    </div>
+  </div>
+</Layout>

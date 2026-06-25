@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import Card from '../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+
+const talks = (await getCollection('talks'))
+  .filter((t) => !t.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const projects = (await getCollection('projects'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<Layout title="KotReview — Svetlana Meleshkina" description="Больше 20 лет в разработке. .NET, AI Solo Development, Agentic Engineering, LLM под капотом продукта.">
+  <div class="container">
+    <section class="hero">
+      <h1>Привет, я Светлана.</h1>
+      <p>
+        Больше 20 лет в enterprise-разработке. Последние 10 — в .NET. Днём стою на страже надёжности ИТ-систем крупного завода,
+        вечерами — технический фаундер, исследую AI-разработку и превращаю LLM из непредсказуемой магии в стабильный компонент.
+      </p>
+      <SocialLinks />
+    </section>
+
+    <section>
+      <h2 class="section-title">Последние мысли</h2>
+      <div class="card-grid">
+        {posts.map((post) => (
+          <Card
+            href={`/posts/${post.id}/`}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.date}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+      <p style="margin-top: 1rem;"><a href="/posts">Все записи →</a></p>
+    </section>
+
+    <section style="margin-top: 3rem;">
+      <h2 class="section-title">Доклады</h2>
+      <div class="card-grid card-grid-2">
+        {talks.map((talk) => (
+          <Card
+            href={`/talks/${talk.id}/`}
+            title={talk.data.title}
+            description={talk.data.description}
+            date={talk.data.date}
+            tags={talk.data.tags}
+          />
+        ))}
+      </div>
+      <p style="margin-top: 1rem;"><a href="/talks">Все доклады →</a></p>
+    </section>
+
+    <section style="margin-top: 3rem;">
+      <h2 class="section-title">Проекты</h2>
+      <div class="card-grid card-grid-2">
+        {projects.map((project) => (
+          <Card
+            href={`/projects/${project.id}/`}
+            title={project.data.title}
+            description={project.data.description}
+            tags={project.data.tags}
+            meta={project.data.status === 'beta' ? 'beta' : project.data.status === 'done' ? 'завершён' : 'активен'}
+          />
+        ))}
+      </div>
+      <p style="margin-top: 1rem;"><a href="/projects">Все проекты →</a></p>
+    </section>
+  </div>
+</Layout>
