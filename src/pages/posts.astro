@@ -8,10 +8,10 @@ const posts = (await getCollection('posts'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<Layout title="Мысли — KotReview" description="Заметки про AI Solo Development, LLM под капотом продукта, агентов и инженерную практику.">
+<Layout title="Посты — KotReview" description="Заметки про AI Solo Development, LLM под капотом продукта, агентов и инженерную практику.">
   <div class="container">
     <section class="hero">
-      <h1>Мысли</h1>
+      <h1>Посты</h1>
       <p>Короткие и не очень заметки про агентов, промпты, код и то, где всё это ломается.</p>
     </section>
 
