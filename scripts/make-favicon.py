@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 
-src = "public/stickers/hello.png"
+src = "public/stickers/hero-friends.png"
 out_dir = "public"
 
 img = Image.open(src).convert("RGBA")
@@ -10,8 +10,11 @@ img = Image.open(src).convert("RGBA")
 bbox = img.getbbox()
 cropped = img.crop(bbox)
 
-# Make square with transparent background
-size = max(cropped.size)
+# Make square with transparent background and a little padding
+padding_ratio = 0.08
+content_size = max(cropped.size)
+padding = int(content_size * padding_ratio)
+size = content_size + padding * 2
 square = Image.new("RGBA", (size, size), (0, 0, 0, 0))
 x = (size - cropped.width) // 2
 y = (size - cropped.height) // 2
