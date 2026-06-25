@@ -22,12 +22,17 @@ const projects = (await getCollection('projects'))
 <Layout title="KotReview — Svetlana Meleshkina" description="Больше 20 лет в разработке. .NET, AI Solo Development, Agentic Engineering, LLM под капотом продукта.">
   <div class="container">
     <section class="hero">
-      <h1>Привет, я Светлана.</h1>
-      <p>
-        Больше 20 лет в enterprise-разработке. Последние 10 — в .NET. Днём стою на страже надёжности ИТ-систем крупного завода,
-        вечерами — технический фаундер, исследую AI-разработку и превращаю LLM из непредсказуемой магии в стабильный компонент.
-      </p>
-      <SocialLinks />
+      <div class="hero-grid">
+        <div>
+          <h1>Привет, я Светлана.</h1>
+          <p>
+            Больше 20 лет в enterprise-разработке. Последние 10 — в .NET. Днём стою на страже надёжности ИТ-систем крупного завода,
+            вечерами — технический фаундер, исследую AI-разработку и превращаю LLM из непредсказуемой магии в стабильный компонент.
+          </p>
+          <SocialLinks />
+        </div>
+        <img class="hero-image" src="/stickers/hero-ai.png" alt="Кот-программист с AI" width="300" height="300" />
+      </div>
     </section>
 
     <section>

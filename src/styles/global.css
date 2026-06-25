@@ -96,8 +96,40 @@ footer {
   text-align: center;
 }
 
+.footer-mascot {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.12));
+}
+
 .hero {
   padding: 3rem 0 2rem;
+}
+
+.hero-grid {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 24px rgba(245, 158, 11, 0.15));
+}
+
+@media (min-width: 640px) {
+  .hero-grid {
+    grid-template-columns: 1fr auto;
+  }
+
+  .hero-image {
+    max-width: 300px;
+    margin: 0;
+  }
 }
 
 .hero h1 {
