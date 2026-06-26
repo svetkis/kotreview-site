@@ -138,13 +138,6 @@ footer {
   align-items: start;
 }
 
-.hero-images {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-}
-
 .hero-photo {
   width: 100%;
   max-width: 280px;
@@ -156,22 +149,9 @@ footer {
   box-shadow: 0 0 24px rgba(245, 158, 11, 0.12);
 }
 
-.hero-image {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-  margin: 0 auto;
-  filter: drop-shadow(0 0 24px rgba(245, 158, 11, 0.15));
-}
-
 @media (min-width: 640px) {
   .hero-grid {
     grid-template-columns: 1fr auto;
-  }
-
-  .hero-image {
-    max-width: 300px;
-    margin: 0;
   }
 }
 
