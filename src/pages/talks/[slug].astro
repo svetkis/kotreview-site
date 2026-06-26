@@ -32,6 +32,12 @@ function youtubeId(url: string) {
       <YouTube id={youtubeId(talk.data.youtube)} title={talk.data.title} />
     )}
 
+    {talk.data.eventUrl && (
+      <p>
+        <a href={talk.data.eventUrl} target="_blank" rel="noopener">Анонс на сайте конференции →</a>
+      </p>
+    )}
+
     {talk.data.slides && (
       <p>
         <a href={talk.data.slides} target="_blank" rel="noopener">Слайды →</a>

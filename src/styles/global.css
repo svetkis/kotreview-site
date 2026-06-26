@@ -203,6 +203,11 @@ footer {
   overflow: hidden;
 }
 
+.card-horizontal {
+  flex-direction: row;
+  align-items: stretch;
+}
+
 .card-horizontal .card-image-wrapper {
   width: 120px;
   min-height: 120px;
@@ -221,6 +226,10 @@ footer {
 .card-horizontal .card-image {
   max-height: 120px;
   padding: 0.5rem;
+}
+
+.card-horizontal .card-body {
+  min-width: 0;
 }
 
 @media (max-width: 639px) {
