@@ -59,9 +59,17 @@ header .container {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 800;
   font-size: 1.3rem;
   color: var(--text);
+}
+
+.logo-mascot {
+  width: 32px;
+  height: 32px;
 }
 
 .logo span {

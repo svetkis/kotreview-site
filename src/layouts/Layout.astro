@@ -38,7 +38,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <body>
     <header>
       <div class="container">
-        <a class="logo" href="/">Kot<span>Review</span></a>
+        <a class="logo" href="/">
+          <img class="logo-mascot" src="/stickers/hello.png" alt="" width="32" height="32" />
+          Kot<span>Review</span>
+        </a>
         <nav>
           <a href="/about">Обо мне</a>
           <a href="/talks">Доклады</a>
