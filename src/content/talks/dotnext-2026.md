@@ -2,7 +2,6 @@
 title: "ИИ уверен. Я нет. Как не потерять контроль над разработкой"
 date: 2026-09-01
 description: "Как создать систему контроля для ИИ-агента средствами экосистемы .NET."
-youtube: https://www.youtube.com/watch?v=
 tags: [ai, agents, dotnext, dotnet, methodology]
 ---
 

@@ -20,7 +20,7 @@ const talks = defineCollection({
     title: z.string(),
     date: z.date(),
     description: z.string().optional(),
-    youtube: z.string().url(),
+    youtube: z.string().url().optional(),
     slides: z.string().url().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),

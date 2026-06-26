@@ -28,7 +28,9 @@ function youtubeId(url: string) {
       {talk.data.tags.map((tag) => <span class="tag">{tag}</span>)}
     </div>
 
-    <YouTube id={youtubeId(talk.data.youtube)} title={talk.data.title} />
+    {talk.data.youtube && (
+      <YouTube id={youtubeId(talk.data.youtube)} title={talk.data.title} />
+    )}
 
     {talk.data.slides && (
       <p>
