@@ -33,7 +33,6 @@ const featured = featuredEntries.map((entry) => {
     ...entry,
     hrefPrefix,
     title,
-    image: entry.collection === 'posts' ? (entry.data.image || extractFirstImage(entry.body)) : undefined,
   };
 });
 
@@ -82,7 +81,6 @@ const projects = (await getCollection('projects'))
             description={item.data.description}
             date={'date' in item.data ? item.data.date : undefined}
             tags={item.data.tags}
-            image={item.image}
           />
         ))}
       </div>
