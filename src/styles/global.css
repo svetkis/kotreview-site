@@ -356,6 +356,19 @@ article pre {
   margin-top: 1rem;
 }
 
+.socials-cta {
+  margin-top: 1rem;
+}
+
+.socials-secondary {
+  margin-top: 0.75rem;
+}
+
+.socials-secondary .btn {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.85rem;
+}
+
 @media (min-width: 640px) {
   .card-grid-2 {
     grid-template-columns: repeat(2, 1fr);
