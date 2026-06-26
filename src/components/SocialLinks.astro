@@ -1,6 +1,5 @@
 ---
 const links = [
-  { name: 'Канал в Telegram', url: 'https://t.me/kot_review' },
   { name: 'GitHub', url: 'https://github.com/svetkis' },
   { name: 'Habr', url: 'https://habr.com/ru/users/svetkis/articles/' },
   { name: 'LinkedIn', url: 'https://www.linkedin.com/in/svetlana-meleshkina/' },
@@ -10,10 +9,11 @@ const links = [
 
 <div class="socials-cta">
   <a class="btn" href="https://t.me/svetkis" target="_blank" rel="noopener">Написать в Telegram</a>
+  <a class="btn btn-outline" href="https://t.me/kot_review" target="_blank" rel="noopener">Подписаться на канал</a>
 </div>
 
 <div class="socials socials-secondary">
   {links.map((link) => (
-    <a class="btn btn-outline" href={link.url} target="_blank" rel="noopener">{link.name}</a>
+    <a href={link.url} target="_blank" rel="noopener">{link.name}</a>
   ))}
 </div>

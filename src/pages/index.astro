@@ -4,37 +4,41 @@ import SocialLinks from '../components/SocialLinks.astro';
 import Card from '../components/Card.astro';
 import { getCollection, getEntry } from 'astro:content';
 
-function extractFirstImage(body?: string): string | undefined {
-  if (!body) return undefined;
-  const match = body.match(/!\[.*?\]\((.*?)\)/);
-  return match ? match[1] : undefined;
-}
-
-const featuredEntries = await Promise.all([
-  getEntry('posts', '2026-05-07-три-типа-полезных-ai-скиллов'),
-  getEntry('posts', '2026-05-13-анатомия-скилла'),
-  getEntry('posts', '2026-06-16-как-готовить-ai-скиллы-от-теории-к-практике'),
-  getEntry('talks', 'spb-dotnet-llm-under-hood-2026'),
-  getEntry('talks', 'spb-dotnet-ai-code-review-2025'),
-  getEntry('projects', 'ai-code-review-benchmark'),
-]);
-
-const featured = featuredEntries.map((entry) => {
+function cardProps(entry: any) {
   const hrefPrefix =
     entry.collection === 'posts' ? '/posts/' :
     entry.collection === 'talks' ? '/talks/' : '/projects/';
   const title =
-    entry.collection === 'projects'
-      ? entry.id === 'ai-code-review-benchmark'
-        ? 'AI Code Review Benchmark'
-        : entry.data.title
+    entry.collection === 'projects' && entry.id === 'ai-code-review-benchmark'
+      ? 'AI Code Review Benchmark'
       : entry.data.title;
   return {
     ...entry,
     hrefPrefix,
     title,
   };
-});
+}
+
+const skills = await Promise.all([
+  getEntry('posts', '2026-05-07-три-типа-полезных-ai-скиллов'),
+  getEntry('posts', '2026-05-13-анатомия-скилла'),
+  getEntry('posts', '2026-06-16-как-готовить-ai-скиллы-от-теории-к-практике'),
+]).then((entries) => entries.map(cardProps));
+
+const codeReview = await Promise.all([
+  getEntry('talks', 'spb-dotnet-ai-code-review-2025'),
+  getEntry('projects', 'ai-code-review-benchmark'),
+]).then((entries) => entries.map(cardProps));
+
+const llmInProd = await Promise.all([
+  getEntry('talks', 'spb-dotnet-llm-under-hood-2026'),
+]).then((entries) => entries.map(cardProps));
+
+function extractFirstImage(body?: string): string | undefined {
+  if (!body) return undefined;
+  const match = body.match(/!\[.*?\]\((.*?)\)/);
+  return match ? match[1] : undefined;
+}
 
 const posts = (await getCollection('posts'))
   .filter((p) => !p.data.draft)
@@ -65,16 +69,71 @@ const projects = (await getCollection('projects'))
             Превращаю LLM из непредсказуемой магии в предсказуемый и надёжный компонент —
             который стабильно работает под капотом продукта или в цикле разработки.
           </p>
+          <div class="hero-roles">
+            <span>LLM в production</span>
+            <span>AI code review</span>
+            <span>Agentic development</span>
+            <span>.NET / enterprise</span>
+          </div>
           <SocialLinks />
         </div>
         <img class="hero-photo" src="/images/author.jpg" alt="Светлана Мелешкина" width="280" height="280" />
       </div>
     </section>
 
+    <section class="proof-section">
+      <div class="proof-grid">
+        <div class="proof">
+          <strong>20+</strong>
+          <span>лет в enterprise-разработке</span>
+        </div>
+        <div class="proof">
+          <strong>10+</strong>
+          <span>лет в .NET и промышленных системах</span>
+        </div>
+        <div class="proof">
+          <strong>Доклады</strong>
+          <span>DotNext, SPbDotNet</span>
+        </div>
+        <div class="proof">
+          <strong>Production</strong>
+          <span>боты, benchmark, open-source</span>
+        </div>
+      </div>
+    </section>
+
     <section style="margin-top: 3rem;">
       <h2 class="section-title">С чего начать</h2>
+
+      <h3 class="topic-title">Если вам про AI-скиллы и агентов</h3>
       <div class="card-grid card-grid-2">
-        {featured.map((item) => (
+        {skills.map((item) => (
+          <Card
+            href={`${item.hrefPrefix}${item.id}/`}
+            title={item.title}
+            description={item.data.description}
+            date={'date' in item.data ? item.data.date : undefined}
+            tags={item.data.tags}
+          />
+        ))}
+      </div>
+
+      <h3 class="topic-title">Если про code review</h3>
+      <div class="card-grid card-grid-2">
+        {codeReview.map((item) => (
+          <Card
+            href={`${item.hrefPrefix}${item.id}/`}
+            title={item.title}
+            description={item.data.description}
+            date={'date' in item.data ? item.data.date : undefined}
+            tags={item.data.tags}
+          />
+        ))}
+      </div>
+
+      <h3 class="topic-title">Если про LLM в продукте</h3>
+      <div class="card-grid card-grid-2">
+        {llmInProd.map((item) => (
           <Card
             href={`${item.hrefPrefix}${item.id}/`}
             title={item.title}
