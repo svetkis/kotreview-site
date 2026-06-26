@@ -2,13 +2,40 @@
 import Layout from '../layouts/Layout.astro';
 import SocialLinks from '../components/SocialLinks.astro';
 import Card from '../components/Card.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 
 function extractFirstImage(body?: string): string | undefined {
   if (!body) return undefined;
   const match = body.match(/!\[.*?\]\((.*?)\)/);
   return match ? match[1] : undefined;
 }
+
+const featuredEntries = await Promise.all([
+  getEntry('posts', '2026-05-07-три-типа-полезных-ai-скиллов'),
+  getEntry('posts', '2026-05-13-анатомия-скилла'),
+  getEntry('posts', '2026-06-16-как-готовить-ai-скиллы-от-теории-к-практике'),
+  getEntry('talks', 'spb-dotnet-llm-under-hood-2026'),
+  getEntry('talks', 'spb-dotnet-ai-code-review-2025'),
+  getEntry('projects', 'ai-code-review-benchmark'),
+]);
+
+const featured = featuredEntries.map((entry) => {
+  const hrefPrefix =
+    entry.collection === 'posts' ? '/posts/' :
+    entry.collection === 'talks' ? '/talks/' : '/projects/';
+  const title =
+    entry.collection === 'projects'
+      ? entry.id === 'ai-code-review-benchmark'
+        ? 'AI Code Review Benchmark'
+        : entry.data.title
+      : entry.data.title;
+  return {
+    ...entry,
+    hrefPrefix,
+    title,
+    image: entry.collection === 'posts' ? (entry.data.image || extractFirstImage(entry.body)) : undefined,
+  };
+});
 
 const posts = (await getCollection('posts'))
   .filter((p) => !p.data.draft)
@@ -45,7 +72,23 @@ const projects = (await getCollection('projects'))
       </div>
     </section>
 
-    <section>
+    <section style="margin-top: 3rem;">
+      <h2 class="section-title">С чего начать</h2>
+      <div class="card-grid card-grid-2">
+        {featured.map((item) => (
+          <Card
+            href={`${item.hrefPrefix}${item.id}/`}
+            title={item.title}
+            description={item.data.description}
+            date={'date' in item.data ? item.data.date : undefined}
+            tags={item.data.tags}
+            image={item.image}
+          />
+        ))}
+      </div>
+    </section>
+
+    <section style="margin-top: 3rem;">
       <h2 class="section-title">Последние посты</h2>
       <div class="card-grid">
         {posts.map((post) => (
