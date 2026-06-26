@@ -1,7 +1,7 @@
 ---
 title: "LLM под капотом. Что может пойти не так"
 date: 2026-05-27
-description: "Доклад на SPbDotNet №119 про ботов @podtext_detect_bot и @tubik_detector_bot, галлюцинации LLM и паттерны защиты."
+description: "Доклад SPbDotNet №119: реальный опыт Telegram-ботов с LLM, системные галлюцинации и паттерны защиты продакшена."
 youtube: https://www.youtube.com/watch?v=hQWaAbfFYaY
 slides: https://github.com/DotNetRu/AuditBlobs/blob/master/slides/LLM-Under-Hood-Go-Wrong.pdf
 tags: [llm, bots, spbdotnet]

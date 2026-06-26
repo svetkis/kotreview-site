@@ -1,7 +1,7 @@
 ---
 title: "AI Code Review"
 date: 2025-11-15
-description: "Доклад на SPB DotNet 2025 про сравнение моделей на задаче code review и полезные промпты."
+description: "Доклад SPB DotNet 2025: какие модели справляются с ревью кода, почему дорогая ≠ лучшая, и промпт для саморевью перед коллегами."
 youtube: https://www.youtube.com/watch?v=yx2Y22SmDOQ
 tags: [ai, code-review, spbdotnet]
 ---

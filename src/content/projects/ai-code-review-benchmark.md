@@ -1,6 +1,6 @@
 ---
 title: "ai-code-review-benchmark"
-description: "Open-source методология и скрипты для сравнения LLM на задаче code review. 17 моделей, 143 находки, 4 реальных production-бага."
+description: "Open-source benchmark LLM на задаче code review: 17 моделей, repeatable методология и 4 реальных production-бага."
 link: https://github.com/svetkis/ai-code-review-benchmark
 tags: [open-source, ai, code-review, benchmark]
 status: active
