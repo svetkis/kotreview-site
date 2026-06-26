@@ -3,9 +3,21 @@ import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import { getCollection } from 'astro:content';
 
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const isUpcoming = (date: Date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d >= today;
+};
+
 const talks = (await getCollection('talks'))
   .filter((t) => !t.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const upcoming = talks.filter((t) => isUpcoming(t.data.date));
+const past = talks.filter((t) => !isUpcoming(t.data.date));
 ---
 
 <Layout title="Доклады — KotReview" description="Доклады про AI Code Review, LLM под капотом продукта и разработку с агентами.">
@@ -15,16 +27,37 @@ const talks = (await getCollection('talks'))
       <p>Выступления на конференциях и встречах сообществ.</p>
     </section>
 
-    <div class="card-grid card-grid-2">
-      {talks.map((talk) => (
-        <Card
-          href={`/talks/${talk.id}/`}
-          title={talk.data.title}
-          description={talk.data.description}
-          date={talk.data.date}
-          tags={talk.data.tags}
-        />
-      ))}
-    </div>
+    {upcoming.length > 0 && (
+      <section style="margin-bottom: 3rem;">
+        <h2 class="section-title">Предстоящие</h2>
+        <div class="card-grid card-grid-2">
+          {upcoming.map((talk) => (
+            <Card
+              href={`/talks/${talk.id}/`}
+              title={talk.data.title}
+              description={talk.data.description}
+              date={talk.data.date}
+              tags={talk.data.tags}
+              meta="предстоящий"
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section>
+      <h2 class="section-title">Прошедшие</h2>
+      <div class="card-grid card-grid-2">
+        {past.map((talk) => (
+          <Card
+            href={`/talks/${talk.id}/`}
+            title={talk.data.title}
+            description={talk.data.description}
+            date={talk.data.date}
+            tags={talk.data.tags}
+          />
+        ))}
+      </div>
+    </section>
   </div>
 </Layout>

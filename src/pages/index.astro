@@ -49,10 +49,21 @@ const posts = (await getCollection('posts'))
     image: post.data.image || extractFirstImage(post.body),
   }));
 
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const isUpcoming = (date: Date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d >= today;
+};
+
 const talks = (await getCollection('talks'))
   .filter((t) => !t.data.draft)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const upcomingTalks = talks.filter((t) => isUpcoming(t.data.date));
+const latestTalks = talks.filter((t) => !isUpcoming(t.data.date)).slice(0, 3);
 
 const projects = (await getCollection('projects'))
   .filter((p) => !p.data.draft)
@@ -162,10 +173,28 @@ const projects = (await getCollection('projects'))
       <p style="margin-top: 1rem;"><a href="/posts">Все записи →</a></p>
     </section>
 
+    {upcomingTalks.length > 0 && (
+      <section style="margin-top: 3rem;">
+        <h2 class="section-title">Предстоящие доклады</h2>
+        <div class="card-grid card-grid-2">
+          {upcomingTalks.map((talk) => (
+            <Card
+              href={`/talks/${talk.id}/`}
+              title={talk.data.title}
+              description={talk.data.description}
+              date={talk.data.date}
+              tags={talk.data.tags}
+              meta="предстоящий"
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
     <section style="margin-top: 3rem;">
       <h2 class="section-title">Доклады</h2>
       <div class="card-grid card-grid-2">
-        {talks.map((talk) => (
+        {latestTalks.map((talk) => (
           <Card
             href={`/talks/${talk.id}/`}
             title={talk.data.title}
