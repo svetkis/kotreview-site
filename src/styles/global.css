@@ -50,6 +50,10 @@ button:focus-visible,
   padding: 0 1.25rem;
 }
 
+.container-wide {
+  max-width: 1040px;
+}
+
 header {
   border-bottom: 1px solid var(--border);
   background: rgba(15, 15, 18, 0.8);
