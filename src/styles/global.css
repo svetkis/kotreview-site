@@ -130,6 +130,24 @@ footer {
   align-items: start;
 }
 
+.hero-images {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.hero-photo {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.12);
+}
+
 .hero-image {
   width: 100%;
   max-width: 300px;
@@ -144,8 +162,8 @@ footer {
   }
 
   .hero-image {
-    max-width: 340px;
-    margin: -0.5rem 0 0;
+    max-width: 300px;
+    margin: 0;
   }
 }
 
