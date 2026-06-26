@@ -8,6 +8,11 @@ interface Props {
 
 const { title, description = 'KotReview — Svetlana Meleshkina: .NET, AI engineering, agentic development' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+
+function current(path: string) {
+  if (path === '/') return Astro.url.pathname === '/' ? 'page' : undefined;
+  return Astro.url.pathname.startsWith(path) ? 'page' : undefined;
+}
 ---
 
 <!doctype html>
@@ -43,10 +48,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
           Kot<span>Review</span>
         </a>
         <nav>
-          <a href="/about">Обо мне</a>
-          <a href="/talks">Доклады</a>
-          <a href="/projects">Проекты</a>
-          <a href="/posts">Посты</a>
+          <a href="/about" aria-current={current('/about')}>Обо мне</a>
+          <a href="/talks" aria-current={current('/talks')}>Доклады</a>
+          <a href="/projects" aria-current={current('/projects')}>Проекты</a>
+          <a href="/posts" aria-current={current('/posts')}>Посты</a>
         </nav>
       </div>
     </header>
