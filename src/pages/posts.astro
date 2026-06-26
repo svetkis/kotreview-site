@@ -22,10 +22,9 @@ const posts = (await getCollection('posts'))
   <div class="container">
     <section class="hero">
       <h1>Посты</h1>
-      <p>Короткие и не очень заметки про агентов, промпты, код и то, где всё это ломается.</p>
     </section>
 
-    <div class="card-grid card-grid-preview">
+    <div class="card-grid">
       {posts.map((post) => (
         <Card
           href={`/posts/${post.id}/`}
