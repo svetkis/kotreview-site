@@ -168,20 +168,12 @@ footer {
   max-width: 600px;
 }
 
-.hero-roles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.hero-roles span {
-  font-size: 0.9rem;
-  color: var(--muted);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px;
+.hero-lead {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 0.75rem;
+  max-width: 600px;
 }
 
 .proof-section {
