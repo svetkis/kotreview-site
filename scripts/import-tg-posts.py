@@ -128,6 +128,17 @@ def make_unique_slug(date_str: str, title: str, msg_id: int, existing: set[str])
     return slug
 
 
+def collect_existing_sources(posts_dir: Path) -> set[str]:
+    """Собирает source URL из уже импортированных постов."""
+    sources = set()
+    for path in posts_dir.glob("*.md"):
+        text = path.read_text(encoding="utf-8")
+        m = re.search(r"^source:\s*(.+)$", text, re.MULTILINE)
+        if m:
+            sources.add(m.group(1).strip())
+    return sources
+
+
 async def download_photos(client, messages, image_prefix: str) -> list[str]:
     """Скачивает фото из сообщений, возвращает список относительных путей."""
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
@@ -180,6 +191,7 @@ async def main():
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
     existing_slugs = {p.stem for p in POSTS_DIR.glob("*.md")}
+    existing_sources = collect_existing_sources(POSTS_DIR)
 
     client = TelegramClient(SESSION_PATH, API_ID, API_HASH)
     await client.connect()
@@ -235,6 +247,11 @@ async def main():
         description = extract_description(body, title) if body else title
         tags = extract_tags(body)
         source = f"https://t.me/{CHANNEL}/{msg_id}"
+
+        if source in existing_sources:
+            print(f"  Пропуск id={msg_id}: уже импортировано")
+            skipped += 1
+            continue
 
         slug = make_unique_slug(date_str, title, msg_id, existing_slugs)
         md_path = POSTS_DIR / f"{slug}.md"
