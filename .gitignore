@@ -25,5 +25,9 @@ pnpm-debug.log*
 
 # serena local overrides
 .serena/project.local.yml
+.serena/project.yml.bak
 .serena/cache/
 .serena/memories/
+
+# codex
+.codex/
