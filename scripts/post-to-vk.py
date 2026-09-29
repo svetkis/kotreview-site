@@ -5,13 +5,14 @@
 Что делает:
   - читает Markdown-посты (frontmatter: title, date, source; картинки в теле);
   - конвертирует Markdown в plain text для VK;
-  - заливает картинки через photos.getWallUploadServer / photos.saveWallPhoto;
+  - заливает картинки как документы на стену (docs API): прямая загрузка фото и
+    вложения-ссылки ключом сообщества VK запрещены;
   - публикует wall.post от имени группы (from_group=1);
   - помечает отправленные посты в scripts/.vk-state.json (повторно не отправляет).
 
 Настройка (scripts/.env, не коммитится):
   VK_GROUP_ID=kot_review          — числовой ID группы или короткое имя (без минуса)
-  VK_COMMUNITY_TOKEN=...          — ключ доступа сообщества с правами «Фото» и «Стена»
+  VK_COMMUNITY_TOKEN=...          — ключ доступа сообщества с правами «Стена» и «Документы»
   SITE_URL=https://kotreview.ru   (опционально)
 
 Запуск:
@@ -145,23 +146,37 @@ def build_message(meta: dict, body: str, slug: str, site_url: str, with_site_lin
     return "\n\n".join(parts)
 
 
-def upload_photo(token: str, group_id: int, image_path: Path) -> str:
-    server = vk_call(token, "photos.getWallUploadServer", group_id=group_id)
-    upload_url = server["upload_url"]
-    with open(image_path, "rb") as f:
-        up = requests.post(upload_url, files={"photo": (image_path.name, f)}, timeout=120)
-    up.raise_for_status()
-    up_data = up.json()
-    saved = vk_call(
-        token,
-        "photos.saveWallPhoto",
-        group_id=group_id,
-        server=up_data.get("server"),
-        photo=up_data.get("photo"),
-        hash=up_data.get("hash"),
-    )
-    item = saved[0]
-    return f"photo{item['owner_id']}_{item['id']}"
+def upload_photo(token: str, group_id: int, image_path: Path, retries: int = 4) -> str:
+    """Загружает фото на стену группы как документ (docs API).
+
+    Прямая загрузка фото (photos.getWallUploadServer) недоступна ключом
+    сообщества (VK error 27), а вложения-ссылки VK не принимает вовсе —
+    поэтому фото едет документом. Upload-серверы VK периодически болеют
+    (504, no_file_no_tmp_dir), так что берём свежий URL на каждую попытку.
+    """
+    last_err = "unknown"
+    for attempt in range(retries):
+        try:
+            server = vk_call(token, "docs.getWallUploadServer", group_id=group_id)
+            with open(image_path, "rb") as f:
+                up = requests.post(
+                    server["upload_url"],
+                    files={"file": (image_path.name, f)},
+                    timeout=120,
+                )
+            up.raise_for_status()
+            data = up.json() if up.text.strip().startswith("{") else {}
+            file_ref = data.get("file")
+            if not file_ref:
+                last_err = data.get("error_descr") or data.get("error") or up.text[:80]
+                raise RuntimeError(last_err)
+            saved = vk_call(token, "docs.save", file=file_ref, group_id=group_id)
+            doc = saved.get("doc") or saved[0]
+            return f"doc{doc['owner_id']}_{doc['id']}"
+        except (requests.RequestException, RuntimeError, KeyError, IndexError, ValueError) as e:
+            last_err = str(e)
+        time.sleep(4)
+    raise VkError("docs.upload", 0, f"не удалось загрузить {image_path.name} за {retries} попыток: {last_err}")
 
 
 def load_state() -> dict:
@@ -242,7 +257,7 @@ def main() -> int:
     if not token or not group_id_raw:
         print("Нет настроек VK. Заполни scripts/.env:")
         print("  VK_GROUP_ID=<числовой id группы или короткое имя, например kot_review>")
-        print("  VK_COMMUNITY_TOKEN=<ключ сообщества с правами «Фото» и «Стена»>")
+        print("  VK_COMMUNITY_TOKEN=<ключ сообщества с правами «Стена» и «Документы»>")
         return 1
 
     # VK_GROUP_ID может быть числовым id или коротким именем (kot_review) — резолвим через API
@@ -276,11 +291,11 @@ def main() -> int:
                 try:
                     attachments.append(upload_photo(token, group_id, local))
                 except VkError as e:
-                    if e.code == 27:
+                    if e.code == 15 or e.code == 27:
                         upload_available = False
                         attachments = []
-                        print("  ! Фото ключом сообщества не загрузить (ограничение VK) —")
-                        print("    посты пойдут с карточкой ссылки на пост сайта вместо фото.")
+                        print(f"  ! Загрузка фото недоступна ({e}) —")
+                        print("    посты пойдут текстом. Проверь раздел «Документы» в группе и право в ключе.")
                     else:
                         raise
             # Если фото не приложили — вкладываем ссылкой пост сайта: VK сделает карточку с og:image
