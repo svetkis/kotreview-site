@@ -7,7 +7,7 @@ const links = (await getCollection('links'))
   .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
 
 // Порядок секций задаётся здесь; новые секции из контента добавляются в конец по алфавиту
-const SECTION_ORDER = ['Канал и соцсети', 'Боты и проекты', 'Здесь на сайте'];
+const SECTION_ORDER = ['Канал и соцсети', 'Боты и проекты'];
 const sections = [...new Set(links.map((l) => l.data.section))].sort((a, b) => {
   const ia = SECTION_ORDER.indexOf(a);
   const ib = SECTION_ORDER.indexOf(b);
@@ -54,8 +54,6 @@ const sections = [...new Set(links.map((l) => l.data.section))].sort((a, b) => {
         </ul>
       </section>
     ))}
-
-    <p class="links-footer">Привет с бумажного стикера 👋 Это мой каталог ссылок — kotreview.ru/links</p>
   </div>
 </Layout>
 
@@ -166,17 +164,9 @@ const sections = [...new Set(links.map((l) => l.data.section))].sort((a, b) => {
     color: var(--accent);
   }
 
-  .links-footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin: 2.5rem 0 0;
-  }
-
   /* На широких экранах каталог остаётся узким — как на телефоне, только с воздухом */
   .links-hero,
-  .links-section,
-  .links-footer {
+  .links-section {
     max-width: 560px;
     margin-left: auto;
     margin-right: auto;
