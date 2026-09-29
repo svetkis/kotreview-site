@@ -1,7 +1,7 @@
 ---
 title: "Tubik"
 url: https://t.me/tubik_detector_bot
-description: "Свидания и токсичные бывшие: перешли переписку — 6 персон разберут и скажут как есть"
+description: "Свидания и токсичные бывшие: скинь переписку — узнаешь, что он имел в виду"
 image: /stickers/links/it-smells.png
 emoji: "😼"
 section: "Боты и проекты"
