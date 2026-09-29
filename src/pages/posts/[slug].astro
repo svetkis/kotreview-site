@@ -14,10 +14,13 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
-// og-картинка для карточек ссылок (VK/Telegram): обложка 1200x630 -> первая картинка поста
-const ogCover = existsSync(`public/images/og/${post.id}.jpg`) ? `/images/og/${post.id}.jpg` : undefined;
-const firstImage =
-  ogCover ?? post.data.image ?? post.body?.match(/\]\((\/images\/[^)]+)\)/)?.[1] ?? undefined;
+// og-картинка для карточек ссылок (VK/Telegram): обложка 1200x630 (ASCII-имя),
+// иначе первая картинка поста, иначе общий баннер сайта
+const firstMedia = post.body?.match(/\]\((\/images\/[^)]+)\)/)?.[1];
+const coverName = firstMedia?.split('/').pop();
+const ogCover =
+  coverName && existsSync(`public/images/og/${coverName}`) ? `/images/og/${coverName}` : undefined;
+const firstImage = ogCover ?? post.data.image ?? firstMedia ?? undefined;
 ---
 
 <Layout title={`${post.data.title} — KotReview`} description={post.data.description} image={firstImage}>
