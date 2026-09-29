@@ -48,6 +48,7 @@ const links = defineCollection({
     url: z.string(),
     description: z.string().optional(),
     emoji: z.string().default('🔗'),
+    image: z.string().optional(),
     section: z.string().default('Ссылки'),
     order: z.number().default(100),
     featured: z.boolean().default(false),

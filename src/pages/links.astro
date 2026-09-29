@@ -41,7 +41,11 @@ const sections = [...new Set(links.map((l) => l.data.section))].sort((a, b) => {
                     target={internal ? undefined : '_blank'}
                     rel={internal ? undefined : 'noopener'}
                   >
-                    <span class="link-emoji" aria-hidden="true">{l.data.emoji}</span>
+                    {l.data.image ? (
+                      <img class="link-img" src={l.data.image} alt="" width="40" height="40" loading="lazy" />
+                    ) : (
+                      <span class="link-emoji" aria-hidden="true">{l.data.emoji}</span>
+                    )}
                     <span class="link-body">
                       <span class="link-title">{l.data.title}</span>
                       {l.data.description && <span class="link-desc">{l.data.description}</span>}
@@ -132,6 +136,14 @@ const sections = [...new Set(links.map((l) => l.data.section))].sort((a, b) => {
     flex-shrink: 0;
     width: 2.2rem;
     text-align: center;
+  }
+
+  .link-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
   }
 
   .link-body {
