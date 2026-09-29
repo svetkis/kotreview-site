@@ -1,5 +1,5 @@
 ---
-title: "🚀 Perplexity и их [Search as Code](http://research.perplexity.ai/articles/rethinking-search-as-code-generation): попытки собрать ИИ без галлюцинаций"
+title: "🚀 Perplexity и их Search as Code: попытки собрать ИИ без галлюцинаций"
 date: 2026-07-08
 description: "Моя любимая тема с ИИ — как отличить галлюцинации от достоверных данных. Обычный RAG и заклинания «НЕ придумывай» в промпте работают из рук вон плохо...."
 tags: ["ai"]

@@ -263,43 +263,60 @@ def main() -> int:
     failed = 0
     upload_available = True  # станет False, если ключ сообщества не может заливать фото (VK error 27)
     for i, p in enumerate(queue):
-        attachments = []
-        for img in p["images"]:
-            if not upload_available:
-                break
-            local = PUBLIC_DIR / img.lstrip("/")
-            if not local.exists():
-                print(f"  ! Картинка не найдена, пропускаю: {local}")
-                continue
+        post_url = f"{site_url}/posts/{p['slug']}/"
+        try:
+            attachments = []
+            for img in p["images"]:
+                if not upload_available:
+                    break
+                local = PUBLIC_DIR / img.lstrip("/")
+                if not local.exists():
+                    print(f"  ! Картинка не найдена, пропускаю: {local}")
+                    continue
+                try:
+                    attachments.append(upload_photo(token, group_id, local))
+                except VkError as e:
+                    if e.code == 27:
+                        upload_available = False
+                        attachments = []
+                        print("  ! Фото ключом сообщества не загрузить (ограничение VK) —")
+                        print("    посты пойдут с карточкой ссылки на пост сайта вместо фото.")
+                    else:
+                        raise
+            # Если фото не приложили — вкладываем ссылкой пост сайта: VK сделает карточку с og:image
+            msg = build_message(p["meta"], p["body"], p["slug"], site_url, with_site_link=not attachments)
+            final_attachments = ",".join(attachments) if attachments else post_url
             try:
-                attachments.append(upload_photo(token, group_id, local))
+                resp = vk_call(
+                    token,
+                    "wall.post",
+                    owner_id=-group_id,
+                    from_group=1,
+                    message=msg,
+                    attachments=final_attachments,
+                )
             except VkError as e:
-                if e.code == 27:
-                    upload_available = False
-                    attachments = []
-                    print("  ! Фото ключом сообщества не загрузить (ограничение VK) —")
-                    print("    посты пойдут с карточкой ссылки на пост сайта вместо фото.")
+                if e.code == 100 and "link_photo_sizing_rule" in str(e) and final_attachments == post_url:
+                    # VK не принял карточку ссылки (og-картинка не проходит по размерам) —
+                    # публикуем без вложения, ссылка на сайт остаётся текстом
+                    print("  ! VK не принял карточку ссылки — публикую ссылкой в тексте")
+                    msg = build_message(p["meta"], p["body"], p["slug"], site_url, with_site_link=True)
+                    resp = vk_call(
+                        token,
+                        "wall.post",
+                        owner_id=-group_id,
+                        from_group=1,
+                        message=msg,
+                        attachments=None,
+                    )
                 else:
                     raise
-        # Если фото не приложили — вкладываем ссылкой пост сайта: VK сделает карточку с og:image
-        post_url = f"{site_url}/posts/{p['slug']}/"
-        msg = build_message(p["meta"], p["body"], p["slug"], site_url, with_site_link=not attachments)
-        final_attachments = ",".join(attachments) if attachments else post_url
-        try:
-            resp = vk_call(
-                token,
-                "wall.post",
-                owner_id=-group_id,
-                from_group=1,
-                message=msg,
-                attachments=final_attachments,
-            )
             post_id = resp.get("post_id")
             state[p["meta"]["source"]] = {"post_id": post_id, "posted_at": time.strftime("%Y-%m-%d %H:%M:%S")}
             save_state(state)
             print(f"  ✓ {p['slug']} -> https://vk.com/wall-{group_id}_{post_id}")
             sent += 1
-        except (VkError, requests.RequestException) as e:
+        except (VkError, requests.RequestException, OSError) as e:
             print(f"  ✗ {p['slug']}: {e}")
             failed += 1
             if sent == 0 and i == 0:

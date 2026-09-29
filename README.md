@@ -70,7 +70,13 @@ pip install telethon
 python scripts/import-tg-posts.py
 ```
 
-Скачивает посты из канала `@kot_review` (сессия в `C:/Repos/.telegram-sessions/master`), создаёт md-файлы и картинки. Уже импортированные посты пропускаются по `source`-ссылке.
+Скачивает посты из канала `@kot_review` (сессия в `C:/Repos/.telegram-sessions/master`), создаёт md-файлы, картинки и видео. Уже импортированные посты пропускаются по `source`-ссылке.
+
+После импорта сгенерируй og-обложки для карточек ссылок (VK/Telegram):
+
+```bash
+node scripts/make-og-images.mjs
+```
 
 ### Кросспостинг в VK-группу
 

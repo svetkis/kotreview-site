@@ -1,4 +1,5 @@
 ---
+import { existsSync } from 'node:fs';
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 
@@ -13,9 +14,10 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
-// первая картинка поста — для og:image (карточки в VK/Telegram/Twitter)
+// og-картинка для карточек ссылок (VK/Telegram): обложка 1200x630 -> первая картинка поста
+const ogCover = existsSync(`public/images/og/${post.id}.jpg`) ? `/images/og/${post.id}.jpg` : undefined;
 const firstImage =
-  post.data.image ?? post.body?.match(/!\[[^\]]*\]\(([^)]+)\)/)?.[1] ?? undefined;
+  ogCover ?? post.data.image ?? post.body?.match(/\]\((\/images\/[^)]+)\)/)?.[1] ?? undefined;
 ---
 
 <Layout title={`${post.data.title} — KotReview`} description={post.data.description} image={firstImage}>

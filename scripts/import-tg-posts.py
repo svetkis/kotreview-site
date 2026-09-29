@@ -145,21 +145,36 @@ def collect_existing_sources(posts_dir: Path) -> set[str]:
     return sources
 
 
-async def download_photos(client, messages, image_prefix: str) -> list[str]:
-    """Скачивает фото из сообщений, возвращает список относительных путей."""
+def sniff_kind(path: Path) -> str:
+    """Определяет тип скачанного файла по magic bytes."""
+    b = path.read_bytes()[:16]
+    if b[4:8] == b"ftyp":
+        return "video"
+    if b.startswith(b"\xff\xd8") or b[8:12] == b"WEBP" or b.startswith(b"\x89PNG") or b.startswith(b"GIF8"):
+        return "image"
+    return "image"
+
+
+async def download_photos(client, messages, image_prefix: str) -> list[tuple[str, str]]:
+    """Скачивает медиа из сообщений, возвращает список (путь, тип)."""
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
-    paths = []
+    media = []
     idx = 1
     for msg in messages:
-        if not msg.photo:
+        if not msg.photo and not (msg.video or msg.video_note):
             continue
-        ext = "jpg"
-        filename = f"{image_prefix}-{idx}.{ext}"
+        filename = f"{image_prefix}-{idx}.jpg"
         local_path = IMAGES_DIR / filename
         await client.download_media(msg.media, file=str(local_path))
-        paths.append(f"/images/posts/{filename}")
+        if sniff_kind(local_path) == "video":
+            new_path = local_path.with_suffix(".mp4")
+            local_path.rename(new_path)
+            local_path = new_path
+            media.append((f"/images/posts/{local_path.name}", "video"))
+        else:
+            media.append((f"/images/posts/{local_path.name}", "image"))
         idx += 1
-    return paths
+    return media
 
 
 def build_markdown(
@@ -168,7 +183,7 @@ def build_markdown(
     description: str,
     tags: list[str],
     source: str,
-    image_paths: list[str],
+    media: list[tuple[str, str]],
     body: str,
 ) -> str:
     """Собирает итоговый Markdown-файл."""
@@ -183,9 +198,15 @@ def build_markdown(
         "---",
         "",
     ]
-    for img in image_paths:
-        lines.append(f"![{title}]({img})")
-    if image_paths:
+    for path, kind in media:
+        if kind == "video":
+            lines.append(
+                f'<video controls preload="none" src="{path}" '
+                f'style="max-width:100%;border-radius:12px;display:block;margin:1rem 0;"></video>'
+            )
+        else:
+            lines.append(f"![{title}]({path})")
+    if media:
         lines.append("")
     lines.append(body.strip())
     lines.append("")
@@ -243,7 +264,7 @@ async def main():
 
         # Текст берём из первого непустого сообщения
         body = "\n\n".join(m.text for m in grp if m.text).strip()
-        if not body and not any(m.photo for m in grp):
+        if not body and not any(m.photo or m.video or m.video_note for m in grp):
             print(f"  Пропуск id={msg_id}: пустое сообщение")
             skipped += 1
             continue
@@ -262,9 +283,9 @@ async def main():
         slug = make_unique_slug(date_str, title, msg_id, existing_slugs)
         md_path = POSTS_DIR / f"{slug}.md"
 
-        # Скачиваем фото
+        # Скачиваем медиа (фото и видео)
         image_prefix = f"{date_str}-{msg_id}"
-        image_paths = await download_photos(client, grp, image_prefix)
+        media = await download_photos(client, grp, image_prefix)
 
         md_content = build_markdown(
             title=title,
@@ -272,12 +293,12 @@ async def main():
             description=description,
             tags=tags,
             source=source,
-            image_paths=image_paths,
+            media=media,
             body=body,
         )
 
         md_path.write_text(md_content, encoding="utf-8")
-        print(f"  Создан: {md_path.name} (id={msg_id}, фото={len(image_paths)})")
+        print(f"  Создан: {md_path.name} (id={msg_id}, медиа={len(media)})")
         created += 1
 
     await client.disconnect()
