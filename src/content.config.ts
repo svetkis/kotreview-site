@@ -40,4 +40,18 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { posts, talks, projects };
+const links = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/links' }),
+  schema: z.object({
+    title: z.string(),
+    // либо https://…, либо внутренний путь вида /posts
+    url: z.string(),
+    description: z.string().optional(),
+    emoji: z.string().default('🔗'),
+    section: z.string().default('Ссылки'),
+    order: z.number().default(100),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { posts, talks, projects, links };
