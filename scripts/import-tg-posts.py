@@ -24,7 +24,13 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="repla
 
 API_ID = "18244066"
 API_HASH = "6b2601ab6875b4c00687faab6073ea5a"
-SESSION_PATH = "D:/Repos/.telegram-sessions/master"
+
+# Сессия может лежать рядом с репозиторием на любом из дисков
+SESSION_CANDIDATES = [
+    Path("D:/Repos/.telegram-sessions/master"),
+    Path("C:/Repos/.telegram-sessions/master"),
+]
+SESSION_PATH = next((p for p in SESSION_CANDIDATES if p.with_suffix(".session").exists()), SESSION_CANDIDATES[0])
 CHANNEL = "kot_review"
 
 # Пути относительно корня проекта

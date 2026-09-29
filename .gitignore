@@ -17,6 +17,10 @@ pnpm-debug.log*
 .env
 .env.production
 
+# VK crossposting local state and secrets
+scripts/.env
+scripts/.vk-state.json
+
 # macOS-specific files
 .DS_Store
 
