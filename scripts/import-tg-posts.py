@@ -156,23 +156,23 @@ def sniff_kind(path: Path) -> str:
 
 
 async def download_photos(client, messages, image_prefix: str) -> list[tuple[str, str]]:
-    """Скачивает медиа из сообщений, возвращает список (путь, тип)."""
+    """Скачивает фото из сообщений. Видео не хостим на сайте — оно живёт на YouTube."""
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     media = []
     idx = 1
     for msg in messages:
-        if not msg.photo and not (msg.video or msg.video_note):
+        if msg.video or msg.video_note:
+            continue
+        if not msg.photo:
             continue
         filename = f"{image_prefix}-{idx}.jpg"
         local_path = IMAGES_DIR / filename
         await client.download_media(msg.media, file=str(local_path))
-        if sniff_kind(local_path) == "video":
-            new_path = local_path.with_suffix(".mp4")
-            local_path.rename(new_path)
-            local_path = new_path
-            media.append((f"/images/posts/{local_path.name}", "video"))
-        else:
-            media.append((f"/images/posts/{local_path.name}", "image"))
+        if sniff_kind(local_path) != "image":
+            local_path.unlink()
+            print(f"  ! Пропуск id={msg.id}: скачался не-фото файл")
+            continue
+        media.append((f"/images/posts/{local_path.name}", "image"))
         idx += 1
     return media
 
@@ -264,7 +264,7 @@ async def main():
 
         # Текст берём из первого непустого сообщения
         body = "\n\n".join(m.text for m in grp if m.text).strip()
-        if not body and not any(m.photo or m.video or m.video_note for m in grp):
+        if not body and not any(m.photo for m in grp):
             print(f"  Пропуск id={msg_id}: пустое сообщение")
             skipped += 1
             continue
