@@ -50,6 +50,7 @@ const links = defineCollection({
     emoji: z.string().default('🔗'),
     section: z.string().default('Ссылки'),
     order: z.number().default(100),
+    featured: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
 });

@@ -36,7 +36,7 @@ const sections = [...new Set(links.map((l) => l.data.section))].sort((a, b) => {
               return (
                 <li>
                   <a
-                    class="link-row"
+                    class={`link-row${l.data.featured ? ' link-row-featured' : ''}`}
                     href={l.data.url}
                     target={internal ? undefined : '_blank'}
                     rel={internal ? undefined : 'noopener'}
@@ -161,6 +161,21 @@ const sections = [...new Set(links.map((l) => l.data.section))].sort((a, b) => {
   }
 
   .link-row:hover .link-arrow {
+    color: var(--accent);
+  }
+
+  /* Выделенная карточка (featured: true) — стикерпак и т.п. */
+  .link-row-featured {
+    border-color: var(--accent);
+    background: rgba(245, 158, 11, 0.07);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+  }
+
+  .link-row-featured .link-title {
+    color: var(--accent);
+  }
+
+  .link-row-featured .link-arrow {
     color: var(--accent);
   }
 
