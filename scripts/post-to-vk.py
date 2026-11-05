@@ -298,6 +298,10 @@ def main() -> int:
                         print("    посты пойдут текстом. Проверь раздел «Документы» в группе и право в ключе.")
                     else:
                         raise
+            # VK позволяет максимум 10 вложений на пост — лишние отрезаем
+            if len(attachments) > 10:
+                attachments = attachments[:10]
+                print(f"  ! Больше 10 картинок — приложил первые 10, остальные — на сайте")
             # Если фото не приложили — вкладываем ссылкой пост сайта: VK сделает карточку с og:image
             msg = build_message(p["meta"], p["body"], p["slug"], site_url, with_site_link=not attachments)
             final_attachments = ",".join(attachments) if attachments else post_url
