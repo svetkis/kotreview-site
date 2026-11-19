@@ -5,7 +5,13 @@ import SocialLinks from '../components/SocialLinks.astro';
 
 <Layout title="Обо мне — KotReview" description="Svetlana Meleshkina: .NET-разработчик, технический фаундер, исследователь AI Solo Development и Agentic Engineering.">
   <article class="container">
-    <h1>Обо мне</h1>
+    <section class="about-hero">
+      <img class="about-photo" src="/images/author.jpg" alt="Светлана Мелешкина" width="112" height="112" />
+      <div class="about-hero-text">
+        <h1>Обо мне</h1>
+        <p>.NET · AI engineering</p>
+      </div>
+    </section>
 
     <p>Больше 20 лет в enterprise-разработке.</p>
 
@@ -42,3 +48,40 @@ import SocialLinks from '../components/SocialLinks.astro';
     </p>
   </article>
 </Layout>
+
+<style>
+  .about-hero {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.5rem 0 1.75rem;
+  }
+
+  .about-photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    box-shadow: 0 0 24px rgba(245, 158, 11, 0.12);
+    flex-shrink: 0;
+  }
+
+  .about-hero-text h1 {
+    margin: 0 0 0.25rem;
+  }
+
+  .about-hero-text p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+
+  @media (min-width: 640px) {
+    .about-photo {
+      width: 112px;
+      height: 112px;
+    }
+  }
+</style>
+
