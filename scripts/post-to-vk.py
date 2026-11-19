@@ -113,6 +113,8 @@ def markdown_to_plain(text: str) -> str:
         return url if label.strip() == url.strip() else f"{label} ({url})"
 
     text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", _link, text)
+    # Зачёркивание
+    text = re.sub(r"~~([^~]+)~~", r"\1", text)
     # Жирный/курсив
     text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
     text = re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"\1", text)

@@ -91,6 +91,8 @@ def extract_description(text: str, title: str = "") -> str:
     # Убираем заголовок, если он есть
     text = clean_body(text, title)
     plain = re.sub(r"\*+", "", text)
+    plain = re.sub(r"~~", "", plain)
+    plain = re.sub(r"`+", "", plain)
     plain = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", plain)
     plain = re.sub(r"\s+", " ", plain).strip()
     if len(plain) <= 160:
